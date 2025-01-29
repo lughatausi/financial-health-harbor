@@ -1,4 +1,4 @@
-import type { FinancialMetrics } from "@/pages/Index";
+import { type FinancialMetrics } from "@/types/financial";
 
 export const calculateFinancialHealth = (metrics: FinancialMetrics): number => {
   // Calculate various ratios

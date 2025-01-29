@@ -1,41 +1,25 @@
-import { Progress } from "@/components/ui/progress";
-import type { FinancialMetrics } from "@/pages/Index";
+import React from "react";
+import { type FinancialMetrics } from "@/types/financial";
+import { calculateFinancialHealth } from "@/utils/financialCalculations";
+import { Card } from "./ui/card";
+import { Progress } from "./ui/progress";
 
-interface Props {
-  score: number;
+interface FinancialHealthScoreProps {
   metrics: FinancialMetrics;
 }
 
-export const FinancialHealthScore = ({ score, metrics }: Props) => {
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600";
-    if (score >= 60) return "text-yellow-600";
-    return "text-red-600";
-  };
-
-  const profitMargin = metrics.revenue ? ((metrics.revenue - metrics.expenses) / metrics.revenue) * 100 : 0;
-  const debtRatio = metrics.assets ? (metrics.liabilities / metrics.assets) * 100 : 0;
+const FinancialHealthScore: React.FC<FinancialHealthScoreProps> = ({ metrics }) => {
+  const score = calculateFinancialHealth(metrics);
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h3 className="text-2xl font-bold mb-2">Overall Score</h3>
-        <span className={`text-4xl font-bold ${getScoreColor(score)}`}>
-          {score.toFixed(1)}%
-        </span>
-        <Progress value={score} className="mt-2" />
+    <Card className="p-6">
+      <h2 className="text-xl font-semibold mb-4">Financial Health Score</h2>
+      <div className="space-y-4">
+        <Progress value={score} className="w-full" />
+        <p className="text-center text-2xl font-bold">{score}/100</p>
       </div>
-
-      <div className="grid grid-cols-2 gap-4 mt-6">
-        <div className="p-4 bg-white rounded-lg shadow-sm">
-          <h4 className="text-sm font-medium text-gray-500">Profit Margin</h4>
-          <p className="text-lg font-semibold">{profitMargin.toFixed(1)}%</p>
-        </div>
-        <div className="p-4 bg-white rounded-lg shadow-sm">
-          <h4 className="text-sm font-medium text-gray-500">Debt Ratio</h4>
-          <p className="text-lg font-semibold">{debtRatio.toFixed(1)}%</p>
-        </div>
-      </div>
-    </div>
+    </Card>
   );
 };
+
+export default FinancialHealthScore;

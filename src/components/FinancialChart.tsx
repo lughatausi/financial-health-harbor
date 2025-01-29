@@ -1,45 +1,74 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { FinancialMetrics } from "@/pages/Index";
+import React from "react";
+import { type FinancialMetrics } from "@/types/financial";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
+import { Card } from "./ui/card";
 
-interface Props {
+interface FinancialChartProps {
   metrics: FinancialMetrics;
 }
 
-export const FinancialChart = ({ metrics }: Props) => {
+const FinancialChart: React.FC<FinancialChartProps> = ({ metrics }) => {
   const data = [
     {
-      name: 'Revenue',
+      name: "Revenue",
       value: metrics.revenue,
     },
     {
-      name: 'Expenses',
+      name: "Expenses",
       value: metrics.expenses,
     },
     {
-      name: 'Assets',
+      name: "Assets",
       value: metrics.assets,
     },
     {
-      name: 'Liabilities',
+      name: "Liabilities",
       value: metrics.liabilities,
     },
     {
-      name: 'Cash Flow',
+      name: "Cash Flow",
       value: metrics.cashFlow,
     },
   ];
 
   return (
-    <div className="h-[400px] w-full">
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
+    <Card className="p-6">
+      <h2 className="text-xl font-semibold mb-4">Financial Metrics Overview</h2>
+      <div className="w-full h-[300px]">
+        <LineChart
+          width={600}
+          height={300}
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="value" fill="#1e40af" />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      </div>
+    </Card>
   );
 };
+
+export default FinancialChart;

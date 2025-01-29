@@ -1,98 +1,89 @@
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import type { FinancialMetrics } from "@/pages/Index";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { type FinancialMetrics } from "@/types/financial";
 
-interface Props {
-  onSubmit: (metrics: FinancialMetrics) => void;
+interface FinancialMetricsFormProps {
+  onSubmit: (data: FinancialMetrics) => void;
+  initialData?: FinancialMetrics;
 }
 
-export const FinancialMetricsForm = ({ onSubmit }: Props) => {
-  const [formData, setFormData] = useState<FinancialMetrics>({
-    revenue: 0,
-    expenses: 0,
-    assets: 0,
-    liabilities: 0,
-    cashFlow: 0,
+const FinancialMetricsForm: React.FC<FinancialMetricsFormProps> = ({
+  onSubmit,
+  initialData,
+}) => {
+  const { register, handleSubmit } = useForm<FinancialMetrics>({
+    defaultValues: initialData || {
+      revenue: 0,
+      expenses: 0,
+      assets: 0,
+      liabilities: 0,
+      cashFlow: 0,
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value) || 0;
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: value
-    }));
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <Label htmlFor="revenue">Revenue</Label>
-        <Input
-          id="revenue"
-          name="revenue"
-          type="number"
-          value={formData.revenue}
-          onChange={handleChange}
-          placeholder="Enter revenue"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="expenses">Expenses</Label>
-        <Input
-          id="expenses"
-          name="expenses"
-          type="number"
-          value={formData.expenses}
-          onChange={handleChange}
-          placeholder="Enter expenses"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="assets">Assets</Label>
-        <Input
-          id="assets"
-          name="assets"
-          type="number"
-          value={formData.assets}
-          onChange={handleChange}
-          placeholder="Enter total assets"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="liabilities">Liabilities</Label>
-        <Input
-          id="liabilities"
-          name="liabilities"
-          type="number"
-          value={formData.liabilities}
-          onChange={handleChange}
-          placeholder="Enter total liabilities"
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="cashFlow">Cash Flow</Label>
-        <Input
-          id="cashFlow"
-          name="cashFlow"
-          type="number"
-          value={formData.cashFlow}
-          onChange={handleChange}
-          placeholder="Enter cash flow"
-        />
-      </div>
-
-      <Button type="submit" className="w-full">Calculate Health Score</Button>
-    </form>
+    <Card className="p-6">
+      <h2 className="text-xl font-semibold mb-4">Enter Financial Metrics</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <label htmlFor="revenue" className="block text-sm font-medium mb-1">
+            Revenue
+          </label>
+          <Input
+            id="revenue"
+            type="number"
+            {...register("revenue", { valueAsNumber: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="expenses" className="block text-sm font-medium mb-1">
+            Expenses
+          </label>
+          <Input
+            id="expenses"
+            type="number"
+            {...register("expenses", { valueAsNumber: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="assets" className="block text-sm font-medium mb-1">
+            Assets
+          </label>
+          <Input
+            id="assets"
+            type="number"
+            {...register("assets", { valueAsNumber: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="liabilities" className="block text-sm font-medium mb-1">
+            Liabilities
+          </label>
+          <Input
+            id="liabilities"
+            type="number"
+            {...register("liabilities", { valueAsNumber: true })}
+          />
+        </div>
+        <div>
+          <label htmlFor="cashFlow" className="block text-sm font-medium mb-1">
+            Cash Flow
+          </label>
+          <Input
+            id="cashFlow"
+            type="number"
+            {...register("cashFlow", { valueAsNumber: true })}
+          />
+        </div>
+        <Button type="submit" className="w-full">
+          Calculate Health Score
+        </Button>
+      </form>
+    </Card>
   );
 };
+
+export default FinancialMetricsForm;
